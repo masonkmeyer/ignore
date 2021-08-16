@@ -1,30 +1,26 @@
 ignore
-# Local .terraform directories
-**/.terraform/*
 
-# .tfstate files
-*.tfstate
-*.tfstate.*
+# Binaries for programs and plugins
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
 
-# Crash log files
-crash.log
+# Test binary, built with `go test -c`
+*.test
 
-# Ignore any .tfvars files that are generated automatically for each Terraform run. Most
-# .tfvars files are managed as part of configuration and so should be included in
-# version control.
-#
-# example.tfvars
+# Output of the go coverage tool, specifically when used with LiteIDE
+*.out
 
-# Ignore override files as they are usually used to override resources locally and so
-# are not checked in
-override.tf
-override.tf.json
-*_override.tf
-*_override.tf.json
+# Dependency directories (remove the comment below to include it)
+# vendor/
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+*.code-workspace
 
-# Include override files you do wish to add to version control using negated pattern
-#
-# !example_override.tf
-
-# Include tfplan files to ignore the plan output of command: terraform plan -out=tfplan
-# example: *tfplan*
+# Local History for Visual Studio Code
+.history/
