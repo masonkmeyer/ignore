@@ -9,6 +9,7 @@ import (
 
 	"github.com/go-git/go-billy/v5/memfs"
 	"github.com/go-git/go-git/v5"
+	"github.com/go-git/go-git/v5/plumbing"
 	"github.com/go-git/go-git/v5/plumbing/filemode"
 	"github.com/go-git/go-git/v5/plumbing/object"
 	"github.com/go-git/go-git/v5/storage/memory"
@@ -105,7 +106,7 @@ func (p *GitProvider) visit(term string, predicate Predicate, visitor Visitor, f
 	return err
 }
 
-// initTree returns the default git tree for the master branch in the gitignore repo.
+// initTree returns the default git tree for the main branch in the gitignore repo.
 func initTree() LazyTree {
 	var tree *object.Tree
 	var once sync.Once
@@ -115,32 +116,35 @@ func initTree() LazyTree {
 		once.Do(func() {
 			fs := memfs.New()
 			storage := memory.NewStorage()
+
 			// We clone the repo into an in-memory store
 			r, err := git.Clone(storage, fs, &git.CloneOptions{
-				URL:          "https://github.com/github/gitignore",
-				SingleBranch: true,
+				URL:           "https://github.com/github/gitignore",
+				SingleBranch:  true,
+				ReferenceName: plumbing.ReferenceName("refs/heads/main"),
 			})
 
+			fmt.Println(err)
 			if err != nil {
 				return
 			}
 
 			// To get the tree, we need to get the HEAD commit and then pull the tree.
-			// Our purpose is to get the tree for the lastest master branch commit.
+			// Our purpose is to get the tree for the lastest main branch commit.
 			ref, err := r.Head()
-
+			fmt.Println(err)
 			if err != nil {
 				return
 			}
 
 			commit, err := r.CommitObject(ref.Hash())
-
+			fmt.Println(err)
 			if err != nil {
 				return
 			}
 
 			tree, err = commit.Tree()
-
+			fmt.Println(err)
 			if err != nil {
 				return
 			}
