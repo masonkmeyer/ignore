@@ -124,7 +124,6 @@ func initTree() LazyTree {
 				ReferenceName: plumbing.ReferenceName("refs/heads/main"),
 			})
 
-			fmt.Println(err)
 			if err != nil {
 				return
 			}
@@ -132,19 +131,16 @@ func initTree() LazyTree {
 			// To get the tree, we need to get the HEAD commit and then pull the tree.
 			// Our purpose is to get the tree for the lastest main branch commit.
 			ref, err := r.Head()
-			fmt.Println(err)
 			if err != nil {
 				return
 			}
 
 			commit, err := r.CommitObject(ref.Hash())
-			fmt.Println(err)
 			if err != nil {
 				return
 			}
 
 			tree, err = commit.Tree()
-			fmt.Println(err)
 			if err != nil {
 				return
 			}
