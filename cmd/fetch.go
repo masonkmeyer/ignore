@@ -9,6 +9,8 @@ import (
 	"github.com/spf13/cobra"
 )
 
+const MAX_RECUSION_DEPTH = 5
+
 type FetchCmd struct {
 	provider repository.Provider
 	Find     bool
@@ -20,12 +22,14 @@ func NewFetchCmd(provider repository.Provider) *FetchCmd {
 	}
 }
 
-func (f *FetchCmd) Run() func(cmd *cobra.Command, args []string) {
+func (f *FetchCmd) Run(aliases map[string]string) func(cmd *cobra.Command, args []string) {
 	return func(cmd *cobra.Command, args []string) {
 		if len(args) == 1 {
 
+			term := resolveAlias(aliases, args[0], 0)
+
 			if f.Find {
-				result, err := f.provider.Search(args[0])
+				result, err := f.provider.Search(term)
 
 				if err != nil {
 					io.Copy(os.Stderr, strings.NewReader(err.Error()))
@@ -38,8 +42,7 @@ func (f *FetchCmd) Run() func(cmd *cobra.Command, args []string) {
 				}
 
 			} else {
-
-				reader, err := f.provider.Get(args[0])
+				reader, err := f.provider.Get(term)
 
 				if err != nil {
 					io.Copy(os.Stderr, strings.NewReader(err.Error()))
@@ -52,4 +55,16 @@ func (f *FetchCmd) Run() func(cmd *cobra.Command, args []string) {
 			}
 		}
 	}
+}
+
+func resolveAlias(aliases map[string]string, value string, attempt int) string {
+	if attempt > MAX_RECUSION_DEPTH {
+		return value
+	}
+
+	if val, ok := aliases[value]; ok {
+		return resolveAlias(aliases, val, attempt+1)
+	}
+
+	return value
 }
